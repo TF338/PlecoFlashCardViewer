@@ -1,6 +1,6 @@
 # 🀄 Chinese Dictionary Flashcard App
 
-A lightweight web app to review and rehearse **Pleco flashcards** on your PC — at a higher frequency than Pleco would normally allow. Designed for focused, desktop-based study using your exported Pleco database.
+A lightweight web app to review and rehearse **Pleco flashcards** on your PC at a higher frequency than Pleco would normally allow. Designed for focused, desktop-based study using your exported Pleco database.
 
 ---
 
@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ### 4. Add Your Flashcard Database
 
 Export your flashcards from Pleco and place the .db file under: database_export/
-⚠️ This app expects a SQLite database export from Pleco.
+This app expects a SQLite database export from Pleco.
 
 ## 🚀 Run the Application
 You can configure the host/port via environment variables or defaults will be used.
@@ -61,7 +61,7 @@ Then run:
 uvicorn app.main:app --host $HOST --port $PORT --reload
 ```
 
-## 💾 🌐 How to Use
+## 🌐 How to Use
 
 	1. Start the app and visit: http://127.0.0.1:8000
 	2. Select a flashcard category and max score
