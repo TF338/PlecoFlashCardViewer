@@ -69,3 +69,14 @@ uvicorn app.main:app --host $HOST --port $PORT --reload
 	3. Click Filter to see matching cards
 	4. Click on Pinyin or Definition cells to reveal or hide them
 	5. Use the scores to prioritize low-performing cards
+	
+	
+## 📚 Credits
+
+    CC-CEDICT
+    This project uses data from the CC-CEDICT Chinese-English dictionary.
+    Licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+
+    Pleco
+    This project can use exported flashcards from Pleco, a popular mobile Chinese dictionary app.
+    Note: The Pleco dictionary content is proprietary. The exported flashcards are only meant to be used for personal use.
