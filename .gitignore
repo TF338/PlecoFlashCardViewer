@@ -19,5 +19,5 @@ __pycache__/
 Thumbs.db
 
 #Database
-database/.*
-database_export/.*
+database/
+database_export/

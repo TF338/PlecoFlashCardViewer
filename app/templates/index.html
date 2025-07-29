@@ -7,7 +7,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed; /* Optional: enforce width constraints */
+            table-layout: fixed;
         }
 
         th, td {
@@ -22,6 +22,15 @@
         th:nth-child(2), td:nth-child(2) { width: 250px; } /* Pinyin */
         th:nth-child(3), td:nth-child(3) { width: 100%; }  /* Definition */
         th:nth-child(4), td:nth-child(4) { width: 80px; text-align: center; } /* Score */
+
+        .hidden {
+            background-color: #f0f0f0; /* Light gray */
+            cursor: pointer;
+        }
+
+        .revealed {
+            background-color: transparent;
+        }
     </style>
 </head>
 
@@ -58,10 +67,10 @@
             {% for card in cards %}
             <tr>
                 <td>{{ card.hw }}</td>
-                <td class="reveal-on-click" data-content="{{ card.pron }}">
+                <td class="reveal-on-click hidden" data-content="{{ card.pron }}">
                     <span class="hidden-content">Click to reveal</span>
                 </td>
-                <td class="reveal-on-click" data-content="{{ card.defn }}">
+                <td class="reveal-on-click hidden" data-content="{{ card.defn }}">
                     <span class="hidden-content">Click to reveal</span>
                 </td>
                 <td>{{ card.score.score if card.score else 'N/A' }}</td>
@@ -70,6 +79,7 @@
         </tbody>
     </table>
     {% endif %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.reveal-on-click').forEach(function (cell) {
@@ -78,15 +88,18 @@
             let revealed = false;
 
             cell.innerHTML = `<span class="hidden-content">${placeholder}</span>`;
+            cell.classList.add('hidden');
 
             cell.addEventListener('click', function () {
                 if (!revealed) {
                     cell.innerHTML = originalContent;
+                    cell.classList.remove('hidden');
                     cell.classList.add('revealed');
                     revealed = true;
                 } else {
                     cell.innerHTML = `<span class="hidden-content">${placeholder}</span>`;
                     cell.classList.remove('revealed');
+                    cell.classList.add('hidden');
                     revealed = false;
                 }
             });
