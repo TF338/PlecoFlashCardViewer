@@ -58,6 +58,7 @@ DEBUG=True
 
 Then run:
 ```
+source .env
 uvicorn app.main:app --host $HOST --port $PORT --reload
 ```
 

@@ -19,9 +19,10 @@ TONE_MARKS = {
 
 
 class FlashCardRepository(BaseRepository):
-    def __init__(self, session):
+    def __init__(self, session, definition_service=None):
         super().__init__(session)
         self.table = FlashCard
+        self.definition_service = definition_service
 
     def get_by_category_and_score(self, category_id: int, max_score: int) -> List[FlashCard]:
         print(f"Querying cards for category={category_id}, max_score={max_score}")
@@ -46,19 +47,20 @@ class FlashCardRepository(BaseRepository):
 
         cards = []
         for row in result:
-            # Clean the word (hw) by removing @ symbols
             cleaned_word = row.hw.replace('@', '') if row.hw else ""
-
-            # Clean the pronunciation (pron) - remove @ and tone numbers
             cleaned_pron = self.__pinyin(row.pron)
+
+            definition = row.defn
+            if not definition and self.definition_service:
+                definition = self.definition_service.lookup(cleaned_word)
 
             cards.append(FlashCard(
                 id=row.id,
                 lang=row.lang,
-                hw=cleaned_word,  # Now storing cleaned word
+                hw=cleaned_word,
                 althw=row.althw.replace('@', '') if row.althw else None,
-                pron=cleaned_pron,  # Now storing cleaned pinyin
-                defn=row.defn,
+                pron=cleaned_pron,
+                defn=definition,
                 dictcreator=row.dictcreator,
                 dictid=row.dictid,
                 dictentry=row.dictentry,

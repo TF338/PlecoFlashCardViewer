@@ -4,24 +4,21 @@ from pathlib import Path
 from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
 
-from app.database.database import init_db, get_session
-from app.repository.category_repository import CategoryRepository
-from app.repository.flash_card_respository import FlashCardRepository
+from app.database.database import init_db
+from app.dependencies.dependency import get_service_container
+from app.dependencies.service_container import ServiceContainer
 from dotenv import load_dotenv
 import os
 
 import uvicorn
 
-# === Logging Setup ===
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# === FastAPI App & Templates ===
 app = FastAPI()
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
@@ -29,11 +26,13 @@ load_dotenv()
 port = int(os.getenv("PORT", 8000))
 host = os.getenv("HOST", "127.0.0.1")
 
-# === Routes ===
 
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request, session=Depends(get_session)):
-    categories = CategoryRepository(session).get_all()
+async def index(
+    request: Request,
+    services: ServiceContainer = Depends(get_service_container),
+):
+    categories = services.category_repository.get_all()
     return templates.TemplateResponse("index.html", {
         "request": request,
         "categories": categories,
@@ -45,13 +44,14 @@ async def index(request: Request, session=Depends(get_session)):
 
 @app.post("/", response_class=HTMLResponse)
 async def filter_cards(
-    request: Request,
-    category_id: int = Form(...),
-    max_score: int = Form(...),
-    session: Session = Depends(get_session)
+        request: Request,
+        category_id: int = Form(...),
+        max_score: int = Form(...),
+        services: ServiceContainer = Depends(get_service_container),
 ):
-    categories = CategoryRepository(session).get_all()
-    cards = FlashCardRepository(session).get_by_category_and_score(category_id, max_score)
+    categories = services.category_repository.get_all()
+    cards = services.flashcard_repository.get_by_category_and_score(category_id, max_score)
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "categories": categories,
@@ -60,24 +60,17 @@ async def filter_cards(
         "max_score": max_score
     })
 
-# === Initialization ===
-
 def initialize_application():
     """Main application initialization routine"""
     try:
         logger.info("Starting database initialization...")
-
-        # Initialize database (will use latest .pqb backup if available)
         init_db(create_tables=True)
-
         logger.info("Application initialized successfully")
         return True
     except Exception as e:
         logger.error(f"Application initialization failed: {str(e)}", exc_info=True)
         return False
 
-
-# === Entry Point ===
 if __name__ == "__main__":
     if initialize_application():
         logger.info("Running application...")
