@@ -1,0 +1,23 @@
+# Ignore virtual environment
+.venv/
+env/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Editor stuff
+.vscode/
+.idea/
+
+# Environment variables / secrets
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+#Database
+database/.*
+database_export/.*
