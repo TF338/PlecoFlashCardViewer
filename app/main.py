@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request, Form, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 
 from app.database.database import init_db
 from app.dependencies.dependency import get_service_container
@@ -20,6 +21,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+app.mount("/app/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
 load_dotenv()
